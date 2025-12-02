@@ -9,7 +9,7 @@ export class Price {
     add(other: Price) {
         if (this.currency !== other.currency)
             throw new CurrencyMismatch()
-        return Price.create(this.amount + other.amount, this.currency)   
+        return Price.create(this.amount + other.amount, this.currency)
     }
     multiply(qty: number) {
         if (!Number.isInteger(qty) || qty <= 0) throw new InvalidQuantity()

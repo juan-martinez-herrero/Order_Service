@@ -1,4 +1,4 @@
-import  {describe, it, expect} from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { Price } from '../../src/domain/value-objects/Price';
 
 describe('Price', () => {

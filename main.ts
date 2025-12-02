@@ -1,8 +1,28 @@
-// import {isHealthy} from './src/shared/health';
-// const health = isHealthy();
-// console.log(`Status: ${health.status}, Timestamp:${health.timestamp.toISOString()}`); 
+import { buildServer } from "../../infrastructure/http/server.ts";
+import { buildContainer } from "../composition/container.ts";
 
-import { buildServer } from "@infrastructure/http/server";
+async function main() {
+    const c = buildContainer();
+    const app = await buildServer(c); //inyectamos container
 
-const port = Number(ProcessingInstruction.env.PORT ?? 3000);
-buildServer().then(app => app.listen({port})) 
+    const port = Number(c.cfg.PORT)
+    const address = await app.listen({ port });
+    c.ports?.events && c.cfg.USE_IN_MEMORY === "false" && console.log(`Outbox ready`);
+
+    const shutdown = async (signal: string) => {
+        c.logger.info(`Received ${signal}, shutting down...`);
+        await app.close();
+        if (c.pool) await c.pool.end();
+        process.exit(0);
+    }
+
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+}
+
+main().catch(err => {
+    console.error(err);
+    process.exit(1);
+});
+
+

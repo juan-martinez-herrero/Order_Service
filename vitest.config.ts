@@ -10,12 +10,12 @@ export default defineConfig({
     environment: 'node'
   },
   resolve: {
-  alias: {
-        '@domain': resolve(__dirname, './src/domain'),
-        '@application': resolve(__dirname, './src/application'),
-        '@infrastructure': resolve(__dirname, './src/infrastructure'),
-        '@shared': resolve(__dirname, './src/shared'),
-        '@composition': resolve(__dirname, './src/composition'),
-      },
+    alias: {
+      '@domain': resolve(__dirname, './src/domain'),
+      '@application': resolve(__dirname, './src/application'),
+      '@infrastructure': resolve(__dirname, './src/infrastructure'),
+      '@shared': resolve(__dirname, './src/shared'),
+      '@composition': resolve(__dirname, './src/composition'),
     },
+  },
 });

@@ -1,9 +1,13 @@
 import Fastify from 'fastify';
-import { OrdersController } from '../../infrastructure/http/OrdersController.ts';
+import { makeOrdersController } from '../../infrastructure/http/controllers/OrdersController.ts';
+import type { AppContainer } from '../../composition/container.ts';
 
-export async function buildServer() {
+
+
+export async function buildServer(c: AppContainer) {
     const app = Fastify();
-    app.post('/orders', OrdersController.create);
-    app.delete('/orders/:id', OrdersController.delete);
+    const ctrl = makeOrdersController(c.useCases.addItemToOrder, c.useCases.createOrder);
+    app.post('/orders', ctrl.create);
+    app.post('/orders/:orderId/items', ctrl.addItem);
     return app;
 }

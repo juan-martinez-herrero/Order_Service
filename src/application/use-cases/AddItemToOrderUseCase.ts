@@ -1,3 +1,11 @@
+export function makeAddItemToOrderUseCase(ctx: AppContext) {
+    return {
+        async execute(input: AddItemToOrderInput): Promise<Result<AddItemToOrderOutput, ApplicationError>> {
+            // igual, que antes, usando ctx.orders o ctx.pricing etc
+        }
+    }
+
+/*
 import type { Result, ok, Err, err, Ok } from '../../shared/result.ts';
 import type { ApplicationError, ValidationError, NotFoundError, ConflictError } from '../../application/errors.ts';
 import type { OrderRepository } from '../../application/ports/OrderRepository.ts';
@@ -75,3 +83,4 @@ export class AddItemToOrder {
         return Object.keys(errors).length ? err({type: "ValidationError", message: "Invalid input", details: errors}) : ok(input);
     }
 }
+*/

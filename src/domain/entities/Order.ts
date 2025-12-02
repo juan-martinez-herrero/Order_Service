@@ -1,6 +1,6 @@
 import { Price } from "../../domain/value-objects/Price.ts";
-import {SKU} from "../../domain/value-objects/SKU.ts";
-import  {Quantity } from "../../domain/value-objects/Quantity.ts";
+import { SKU } from "../../domain/value-objects/SKU.ts";
+import { Quantity } from "../../domain/value-objects/Quantity.ts";
 
 type OrderItem = Readonly<{ sku: SKU; quantity: Quantity; price: Price }>;
 
@@ -27,8 +27,8 @@ export class Order {
     total(): Price {
         if (this.items.lenght === 0) return Price.create(0, "EUR"); //CONVENCION, O LANZAR SI PROCEDE
         const currency = this.items[0].unit.currency;
-        return this.items.reduce((acc, i) => acc.add(i.price.multiply(i.quantity.value)), 
-        Price.create(0, currency));
+        return this.items.reduce((acc, i) => acc.add(i.price.multiply(i.quantity.value)),
+            Price.create(0, currency));
     }
 
     pullDomainEvents(): DomainEvent[] {
@@ -39,4 +39,3 @@ export class Order {
 
     private record(e: DomainEvent) { this.domainEvents.push(e); }
 }
-    

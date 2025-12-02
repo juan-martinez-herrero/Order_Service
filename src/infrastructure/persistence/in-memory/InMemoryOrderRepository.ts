@@ -1,5 +1,5 @@
-import type { OrderRepository } from "../../application/ports/OrderRepository.ts";
-import { Order } from "../../domain/entities/Order.ts";
+import type { OrderRepository } from "../../../application/ports/OrderRepository.ts";
+import { Order } from "../../../domain/entities/Order.ts";
 
 export class InMemoryOrderRepository implements OrderRepository {
     private store = new Map<string, Order>()

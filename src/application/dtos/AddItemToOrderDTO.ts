@@ -6,9 +6,9 @@ export type AddItemToOrderInput = {
 };
 
 export type AddItemToOrderOutput = {
-    orderId: string;
-    total: {
-      amount: number;
-      currency: string;
-    };
+  orderId: string;
+  total: {
+    amount: number;
+    currency: string;
+  };
 }

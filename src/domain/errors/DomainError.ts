@@ -1,5 +1,5 @@
-export class DomainError extends Error {}
-export class InvalidState extends DomainError {}
+export class DomainError extends Error { }
+export class InvalidState extends DomainError { }
 
 export class InvalidPrice extends DomainError {
     constructor(message: string) {
@@ -8,7 +8,7 @@ export class InvalidPrice extends DomainError {
     }
 }
 
-export class CurrencyMismatch extends DomainError {    
+export class CurrencyMismatch extends DomainError {
     constructor(message: string = "Currency mismatch") {
         super(message);
         this.name = "CurrencyMismatch";
