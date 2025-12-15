@@ -1,3 +1,10 @@
+export interface AddItemToOrderDto {
+  orderSku: string
+  productSku: string
+  quantity: number
+}
+
+/*
 export type AddItemToOrderInput = {
   orderId: string;
   sku: string;
@@ -12,3 +19,4 @@ export type AddItemToOrderOutput = {
     currency: string;
   };
 }
+  */

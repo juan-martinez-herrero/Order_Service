@@ -1,5 +1,5 @@
 import type { EventBus } from "../../application/ports/EventBus.ts";
-import { DomainEvent } from "../../domain/events/DomainEvent.ts";
+import { DomainEvent } from "../../domain/events/domain-event.ts";
 import { randomUUID } from "crypto"
 
 type Queryable = { query: (q: string, params?: any[]) => Promise<unknown> };

@@ -1,41 +1,75 @@
-import { Price } from "../../domain/value-objects/Price.ts";
-import { SKU } from "../../domain/value-objects/SKU.ts";
-import { Quantity } from "../../domain/value-objects/Quantity.ts";
-
-type OrderItem = Readonly<{ sku: SKU; quantity: Quantity; price: Price }>;
+import { SKU } from '../value-objects/sku.ts'
+import { OrderItem } from '../value-objects/order-item.ts'
+import { Money } from '../value-objects/money.ts'
+import { Quantity } from '../value-objects/quantity.ts'
+import { DomainEvent } from '../events/domain-event.ts'
+import { OrderCreated } from '../events/order-created.ts'
+import { ItemAddedToOrder } from '../events/item-added-to-order.ts'
 
 export class Order {
-    private readonly items: OrderItem[] = [];
-    private readonly domainEvents: DomainEvent[] = [];
-    constructor(readonly id: OrderId, readonly customerId: CustomerId) { }
+  private readonly _sku: SKU
+  private readonly _items: Map<string, OrderItem> = new Map()
+  private readonly _events: DomainEvent[] = []
 
-    static create(id: OrderId, customerId: CustomerId) {
-        const order = new Order(id, customerId);
-        order.record(new OrderCreated(order.id, order.customerId));
-        return order;
+  constructor(sku: SKU) {
+    this._sku = sku
+    this._events.push(new OrderCreated(sku.value))
+  }
+
+  get sku(): SKU {
+    return this._sku
+  }
+
+  get items(): OrderItem[] {
+    return Array.from(this._items.values())
+  }
+
+  get events(): DomainEvent[] {
+    return [...this._events]
+  }
+
+  addItem(productSku: SKU, quantity: Quantity, unitPrice: Money): void {
+    const existingItem = this._items.get(productSku.value)
+    
+    if (existingItem) {
+      if (!existingItem.unitPrice.equals(unitPrice)) {
+        throw new Error('Cannot add item with different unit price')
+      }
+      const updatedItem = existingItem.increaseQuantity(quantity)
+      this._items.set(productSku.value, updatedItem)
+    } else {
+      const newItem = new OrderItem(productSku, quantity, unitPrice)
+      this._items.set(productSku.value, newItem)
     }
 
-    addItem(sku: SKU, qty: Quantity, unit: Price) {
-        if (this.items.length > 0) {
-            const currency = this.items[0]?.quantity.currency;
-            if (unit.currency !== currency) throw new CurrencyMismatch()
-        }
-        this.items.push(Object.freeze({ sku, quantity: qty, price: unit }));
-        this.record(new ItemAdded(orderId: this.id, sku.value, qty.value, unit.amount));
+    this._events.push(new ItemAddedToOrder(
+      this._sku.value,
+      productSku.value,
+      quantity.value,
+      unitPrice.amount,
+      unitPrice.currency.code
+    ))
+  }
+
+  getTotalByCurrency(): Map<string, Money> {
+    const totals = new Map<string, Money>()
+
+    for (const item of this._items.values()) {
+      const currencyCode = item.unitPrice.currency.code
+      const itemTotal = item.totalPrice
+      
+      if (totals.has(currencyCode)) {
+        const currentTotal = totals.get(currencyCode)!
+        totals.set(currencyCode, currentTotal.add(itemTotal))
+      } else {
+        totals.set(currencyCode, itemTotal)
+      }
     }
 
-    total(): Price {
-        if (this.items.lenght === 0) return Price.create(0, "EUR"); //CONVENCION, O LANZAR SI PROCEDE
-        const currency = this.items[0].unit.currency;
-        return this.items.reduce((acc, i) => acc.add(i.price.multiply(i.quantity.value)),
-            Price.create(0, currency));
-    }
+    return totals
+  }
 
-    pullDomainEvents(): DomainEvent[] {
-        const ev = [...this.domainEvents];
-        (this as any).domainEvents = []; // vacia (truco controlado)
-        return ev;
-    }
-
-    private record(e: DomainEvent) { this.domainEvents.push(e); }
+  clearEvents(): void {
+    this._events.length = 0
+  }
 }

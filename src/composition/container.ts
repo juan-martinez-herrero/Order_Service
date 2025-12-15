@@ -1,3 +1,43 @@
+import { InMemoryOrderRepository } from '../infrastructure/persistence/in-memory/InMemoryOrderRepository.ts'
+import { StaticPricingService } from '../infrastructure/http/StaticPricingService.ts'
+import { NoopEventBus } from '../infrastructure/messaging/NoopEventBus.ts'
+import { CreateOrder } from '../application/use-cases/CreateOrderUseCase.ts'
+import { AddItemToOrder } from '../application/use-cases/AddItemToOrderUseCase.ts'
+import type { OrderRepository } from '../application/ports/OrderRepository.ts'
+import type { PricingService } from '../application/ports/PricingService.ts'
+import type { EventBus } from '../application/ports/EventBus.ts'
+import type { ServerDependencies } from '../application/ports/ServerDependencies.ts'
+
+export interface Dependencies extends ServerDependencies {
+  // Ports
+  orderRepository: OrderRepository
+  pricingService: PricingService
+  eventBus: EventBus
+}
+
+export function buildContainer(): Dependencies {
+  // Infrastructure layer - Adapters
+  const orderRepository = new InMemoryOrderRepository()
+  const pricingService = new StaticPricingService()
+  const eventBus = new NoopEventBus()
+
+  // Application layer - Use Cases
+  const createOrderUseCase = new CreateOrder(orderRepository, eventBus)
+  const addItemToOrderUseCase = new AddItemToOrder(orderRepository, pricingService, eventBus)
+
+  return {
+    // Ports
+    orderRepository,
+    pricingService,
+    eventBus,
+    
+    // Use Cases
+    createOrderUseCase,
+    addItemToOrderUseCase
+  }
+}
+
+/*
 import { loadConfig } from "./config.ts";
 import { InMemoryOrderRepository } from "../infrastructure/persistence/in-memory/InMemoryOrderRepository.ts";
 import { PostgressOrderRepository } from "../infrastructure/persistence/postgres/PostgressOrderRepository.ts";
@@ -37,3 +77,4 @@ export function buildContainer() {
 
 export type AppContainer = ReturnType<typeof buildContainer>;
 
+*/

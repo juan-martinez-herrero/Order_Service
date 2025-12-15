@@ -8,3 +8,4 @@ export class PinoLogger implements Logger {
     error(message: string, meta ?: Record<string, unknown>): { this.log.error(meta ?? {}, message) }
     warn(message: string, meta ?: Record<string, unknown>): { this.log.warn(meta ?? {}, message) }
 }
+

@@ -1,3 +1,63 @@
+import { SKU } from '../../domain/value-objects/sku.ts'
+import { Quantity } from '../../domain/value-objects/quantity.ts'
+import type { Result } from '../../shared/result.ts'
+import { ok, fail } from '../../shared/result.ts'
+import type { OrderRepository } from '../ports/OrderRepository.ts'
+import type { PricingService } from '../ports/PricingService.ts'
+import type { EventBus } from '../ports/EventBus.ts'
+import type { AddItemToOrderDto } from '../dtos/AddItemToOrderDTO.ts'
+import { AppError, ValidationError } from '../errors.ts'
+
+export class AddItemToOrder {
+  constructor(
+    private readonly orderRepository: OrderRepository,
+    private readonly pricingService: PricingService,
+    private readonly eventBus: EventBus
+  ) {}
+
+  async execute(dto: AddItemToOrderDto): Promise<Result<void, AppError>> {
+    try {
+      const orderSku = new SKU(dto.orderSku)
+      const productSku = new SKU(dto.productSku)
+      const quantity = new Quantity(dto.quantity)
+
+      const orderResult = await this.orderRepository.findById(orderSku)
+      if (!orderResult.success) {
+        return fail(orderResult.error)
+      }
+      
+      const order = orderResult.data
+      
+      const priceResult = await this.pricingService.getPrice(productSku)
+      if (!priceResult.success) {
+        return fail(priceResult.error)
+      }
+      
+      const unitPrice = priceResult.data
+
+      order.addItem(productSku, quantity, unitPrice)
+      
+      const saveResult = await this.orderRepository.save(order)
+      if (!saveResult.success) {
+        return fail(saveResult.error)
+      }
+
+      const publishResult = await this.eventBus.publish(order.events)
+      if (!publishResult.success) {
+        return fail(publishResult.error)
+      }
+
+      return ok(undefined)
+    } catch (error) {
+      if (error instanceof Error) {
+        return fail(new ValidationError(error.message))
+      }
+      return fail(new ValidationError('Unknown validation error'))
+    }
+  }
+}
+
+/*
 export function makeAddItemToOrderUseCase(ctx: AppContext) {
     return {
         async execute(input: AddItemToOrderInput): Promise<Result<AddItemToOrderOutput, ApplicationError>> {
@@ -5,7 +65,9 @@ export function makeAddItemToOrderUseCase(ctx: AppContext) {
         }
     }
 
-/*
+====================================================================================================================
+
+
 import type { Result, ok, Err, err, Ok } from '../../shared/result.ts';
 import type { ApplicationError, ValidationError, NotFoundError, ConflictError } from '../../application/errors.ts';
 import type { OrderRepository } from '../../application/ports/OrderRepository.ts';

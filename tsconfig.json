@@ -12,8 +12,10 @@
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "es2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "target": "es2022",
     "types": [],
     // For nodejs:
     // "lib": ["esnext"],
@@ -24,6 +26,7 @@
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
+    "removeComments": false,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -45,7 +48,15 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
   },
-  "include": ["./src/**/*.ts", "main.ts"],
+  "include": ["./src/**/*.ts", "src/main.ts"],
   "exclude": ["node_modules", "dist", "test"]
 }
