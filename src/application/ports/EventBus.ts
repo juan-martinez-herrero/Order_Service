@@ -1,4 +1,4 @@
-import { DomainEvent } from '../../domain/events/domain-event.ts'
+import { DomainEvent } from '../../domain/events/DomainEvents.ts'
 import type { Result } from '../../shared/result.ts'
 import { AppError } from '../errors.ts'
 

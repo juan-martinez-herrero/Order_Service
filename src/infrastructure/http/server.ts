@@ -4,13 +4,14 @@ import { OrderController } from './controllers/OrdersController.ts'
 
 export async function buildServer(dependencies: ServerDependencies) {
   const server = fastify({ 
-    logger: true 
+    logger: false 
   })
 
   // Presentation layer (Controllers)
   const orderController = new OrderController(
     dependencies.createOrderUseCase,
-    dependencies.addItemToOrderUseCase
+    dependencies.addItemToOrderUseCase,
+    dependencies.logger
   )
 
   // Register routes
@@ -18,6 +19,7 @@ export async function buildServer(dependencies: ServerDependencies) {
 
   // Health check endpoint
   server.get('/health', async () => {
+    dependencies.logger.info('Health check requested')
     return { status: 'ok', timestamp: new Date().toISOString() }
   })
 
@@ -36,5 +38,11 @@ export async function buildServer(c: AppContainer) {
     app.post('/orders/:orderId/items', ctrl.addItem);
     return app;
 }
+
+=======================================================================================
+  // Health check endpoint
+  server.get('/health', async () => {
+    return { status: 'ok', timestamp: new Date().toISOString() }
+  })
     
 */

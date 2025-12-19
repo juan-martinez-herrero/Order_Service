@@ -1,4 +1,4 @@
-import { DomainEvent } from './domain-event.ts'
+import { DomainEvent } from './DomainEvents.ts'
 
 export class ItemAddedToOrder extends DomainEvent {
   readonly productSku: string

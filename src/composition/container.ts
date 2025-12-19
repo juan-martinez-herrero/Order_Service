@@ -1,11 +1,13 @@
 import { InMemoryOrderRepository } from '../infrastructure/persistence/in-memory/InMemoryOrderRepository.ts'
 import { StaticPricingService } from '../infrastructure/http/StaticPricingService.ts'
 import { NoopEventBus } from '../infrastructure/messaging/NoopEventBus.ts'
+import { PinoLogger } from '../infrastructure/logging/PinoLogger.ts'
 import { CreateOrder } from '../application/use-cases/CreateOrderUseCase.ts'
 import { AddItemToOrder } from '../application/use-cases/AddItemToOrderUseCase.ts'
 import type { OrderRepository } from '../application/ports/OrderRepository.ts'
 import type { PricingService } from '../application/ports/PricingService.ts'
 import type { EventBus } from '../application/ports/EventBus.ts'
+import type{ Logger } from '../application/ports/Logger.ts'
 import type { ServerDependencies } from '../application/ports/ServerDependencies.ts'
 
 export interface Dependencies extends ServerDependencies {
@@ -13,6 +15,7 @@ export interface Dependencies extends ServerDependencies {
   orderRepository: OrderRepository
   pricingService: PricingService
   eventBus: EventBus
+  logger: Logger
 }
 
 export function buildContainer(): Dependencies {
@@ -20,6 +23,7 @@ export function buildContainer(): Dependencies {
   const orderRepository = new InMemoryOrderRepository()
   const pricingService = new StaticPricingService()
   const eventBus = new NoopEventBus()
+  const logger = new PinoLogger()
 
   // Application layer - Use Cases
   const createOrderUseCase = new CreateOrder(orderRepository, eventBus)
@@ -30,6 +34,7 @@ export function buildContainer(): Dependencies {
     orderRepository,
     pricingService,
     eventBus,
+    logger,
     
     // Use Cases
     createOrderUseCase,

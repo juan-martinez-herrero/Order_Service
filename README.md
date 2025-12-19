@@ -36,3 +36,10 @@
 - 'POST /orders' crea un pedido.
 - 'POST /orders/:orderId/items' agrega una linea (SKU + qty) con precio actual.
 - Devuelve el total del pedido.
+
+## Comandos a ejecutar
+- npm run db:up -> ejecuta postgres levantando el docker-compose
+- npm run db:migrate -> ejecuta los scripts para la creacion de tablas
+- npm run dev -> arranca el API con fastify
+- npm run worker:outbox -> arranca el eventbus con outbox
+

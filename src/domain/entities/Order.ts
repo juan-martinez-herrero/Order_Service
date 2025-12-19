@@ -2,9 +2,9 @@ import { SKU } from '../value-objects/sku.ts'
 import { OrderItem } from '../value-objects/order-item.ts'
 import { Money } from '../value-objects/money.ts'
 import { Quantity } from '../value-objects/quantity.ts'
-import { DomainEvent } from '../events/domain-event.ts'
-import { OrderCreated } from '../events/order-created.ts'
-import { ItemAddedToOrder } from '../events/item-added-to-order.ts'
+import { DomainEvent } from '../events/DomainEvents.ts'
+import { OrderCreated } from '../events/OrderCreated.ts'
+import { ItemAddedToOrder } from '../events/ItemAddedToOrder.ts'
 
 export class Order {
   private readonly _sku: SKU
