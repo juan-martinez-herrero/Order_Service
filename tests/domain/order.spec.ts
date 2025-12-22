@@ -4,8 +4,8 @@ import { SKU } from '../../src/domain/value-objects/sku'
 import { Money } from '../../src/domain/value-objects/money'
 import { Currency } from '../../src/domain/value-objects/currency'
 import { Quantity } from '../../src/domain/value-objects/quantity'
-import { OrderCreated } from '../../src/domain/events/order-created'
-import { ItemAddedToOrder } from '../../src/domain/events/item-added-to-order'
+import { OrderCreated } from '../../src/domain/events/OrderCreated'
+import { ItemAddedToOrder } from '../../src/domain/events/ItemAddedToOrder'
 
 describe('Order', () => {
   describe('creation', () => {

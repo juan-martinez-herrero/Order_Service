@@ -4,7 +4,7 @@ import { ok, fail } from '../../shared/result.ts';
 import type { Result } from '../../shared/result.ts';
 import type { UnitOfWork } from '../ports/UnitOfWorks.ts';
 import type { EventBus } from '../ports/EventBus.ts';
-import type { CreateOrderDto } from '../dto/CreateOrderDto.ts';
+import type { CreateOrderDto } from '../dtos/CreateOrderDTO.ts';
 import { AppError, ValidationError } from '../errors.ts';
 
 export class CreateOrderWithUoW {
